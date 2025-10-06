@@ -1,3 +1,91 @@
+import re, random
+
+TYPO_PROB = 0.04  # 4% rare typos
+
+def _typo_word(w: str) -> str:
+    if len(w) < 4: return w
+    i = random.randint(1, len(w)-2)
+    return w[:i-1] + w[i] + w[i-1] + w[i+1:]
+
+def sprinkle_typos(s: str, prob: float = TYPO_PROB) -> str:
+    parts = re.split(r'(`[^`]+`|\w+://\S+|[a-f0-9]{7,40})', s)
+    out = []
+    for p in parts:
+        if p.startswith('`') or '://' in p or re.fullmatch(r'[a-f0-9]{7,40}', p or ''):
+            out.append(p); continue
+        words = p.split(' ')
+        for i,w in enumerate(words):
+            if random.random() < prob and re.match(r'[A-Za-z]', w):
+                words[i] = _typo_word(w)
+        out.append(' '.join(words))
+    return ''.join(out)
+
+def humanize(msg: str) -> str:
+    m = msg.strip()
+    g = re.match(r"(Added|Deleted|Replaced)\s+snippet\s+'([^']+)'\s+(?:in|into|from)\s+(.+)", m, re.I)
+    if g:
+        kind, name, path = g.group(1).lower(), g.group(2), g.group(3)
+        added = [
+            f"Add snippet “{name}” to {path}", f"Dropped in snippet “{name}” into {path}",
+            f"New code: “{name}” now lives in {path}", f"Introduce “{name}” under {path}",
+            f"Wire up “{name}” in {path}", f"Bring in “{name}” to {path}",
+            f"Lay down “{name}” in {path}", f"Plant “{name}” inside {path}",
+        ]
+        deleted = [
+            f"Remove “{name}” from {path}", f"Cleanup: deleted “{name}” from {path}",
+            f"Trim dead code — “{name}” out of {path}", f"Drop “{name}” from {path}",
+            f"Cut “{name}” out of {path}", f"Retire “{name}” from {path}",
+            f"Scrub out “{name}” in {path}", f"Prune “{name}” away from {path}",
+        ]
+        replaced = [
+            f"Replace “{name}” in {path}", f"Refresh snippet “{name}” in {path}",
+            f"Rework “{name}” — see {path}", f"Swap in a better “{name}” for {path}",
+            f"Revamp “{name}” within {path}", f"Overhaul “{name}” in {path}",
+            f"Modernize “{name}” inside {path}", f"Refactor “{name}” in {path}",
+        ]
+        pool = {"added": added, "deleted": deleted, "replaced": replaced}[kind]
+        import random
+        return sprinkle_typos(random.choice(pool))
+    g = re.match(r"Touched\s+(.+?)\s+\(no snippet change\)", m, re.I)
+    if g:
+        path = g.group(1)
+        opts = [
+            f"Touch up {path} (no functional change)", f"Small nudge in {path}",
+            f"Maintenance tweak in {path}", f"Tiny housekeeping in {path}",
+            f"Keep {path} tidy (no logic changes)", f"Polish {path} a little bit",
+        ]
+        import random
+        return sprinkle_typos(random.choice(opts))
+    g = re.match(r"Minor tweak in\s+(.+)", m, re.I)
+    if g:
+        path = g.group(1)
+        opts = [
+            f"Tiny polish in {path}", f"Minor cleanup in {path}", f"Little fix in {path}",
+            f"Small refinement in {path}", f"Light touch-up in {path}", f"Micro-adjustment in {path}",
+        ]
+        import random
+        return sprinkle_typos(random.choice(opts))
+    if re.search(r"\btests?\b", m, re.I):
+        import random
+        return sprinkle_typos(random.choice([
+            "Tests: tighten and clarify","Make tests less flaky","Update tests a bit",
+            "Tests: improve coverage slightly","Deflake tests around edge cases","Stabilize a couple of tests",
+        ]))
+    if re.search(r"\bdocs?\b|README", m, re.I):
+        import random
+        return sprinkle_typos(random.choice([
+            "Docs pass: clarify wording","README: quick refresh","Polish docs a little",
+            "Docs: add missing bits","Docs cleanup and rewording","Docs: small touch-up across sections",
+        ]))
+    generic = [
+        "Small improvements here and there","A couple of neat touch-ups",
+        "Quiet but helpful refactor","Subtle code hygiene improvements",
+        "Nip and tuck around the codebase","Sanded down a few rough edges",
+        "Quality-of-life tweaks","Tidy up minor inconsistencies",
+    ]
+    import random
+    return sprinkle_typos(m if len(m) > 60 else random.choice(generic))
+
 from datetime import datetime, UTC
 import os, sys, random, re, subprocess
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
