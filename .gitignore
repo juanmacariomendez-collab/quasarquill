@@ -32,3 +32,5 @@ cron.log.*
 # редактор
 *.swp
 *.swo
+.cron.lock
+auto_updater/updater.py.bak.*
