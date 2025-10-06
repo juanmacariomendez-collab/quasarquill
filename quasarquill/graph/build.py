@@ -28,3 +28,5 @@ def build_graph() -> Dict[str, List[str]]:
             if t and t != fn and t in g:
                 g[fn].append(t)
     return g
+
+# autosave 2025-10-06T10:53:50.609328+00:00
