@@ -179,7 +179,7 @@ def check_syntax():
 def git_commit_push(msg):
     try:
         subprocess.run(["git","add","."], check=True)
-        r=subprocess.run(["git","commit","-m",msg])
+        r=subprocess.run(["git","commit","-m",humanize(msg)])
         if r.returncode!=0: return False,"No changes to commit"
         subprocess.run(["git","pull","--rebase"])
         subprocess.run(["git","push"], check=True)
