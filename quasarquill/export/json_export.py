@@ -11,3 +11,5 @@ def export_json() -> str:
     p = os.path.join(REPORTS, "export.json")
     json.dump(data, open(p, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
     return p
+
+# autosave 2025-10-07T18:23:13.288888+00:00
