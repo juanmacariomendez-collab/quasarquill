@@ -16,3 +16,5 @@ def add(title: str, due: Optional[str]=None, tags: Optional[List[str]]=None) -> 
     data["tasks"].append({"ts": datetime.now().isoformat(),"title":title,"due":due or "","tags":tags or []})
     json.dump(data, open(p,"w",encoding="utf-8"), ensure_ascii=False, indent=2)
     return p
+
+# autosave 2025-10-21T15:57:50.696080+00:00
