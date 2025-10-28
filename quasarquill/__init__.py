@@ -12,3 +12,5 @@ __all__ = ["write_note","read_note","list_notes","build_index","build_backlinks"
            "export_json","export_tags_csv","export_tagfreq_csv","export_graph_dot",
            "add_task","add_bookmark"]
 # tweak 2025-10-17T11:29:58.152115+00:00
+
+# autosave 2025-10-28T15:42:13.053117+00:00
