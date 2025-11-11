@@ -22,3 +22,5 @@ def export_graph_dot() -> str:
                 f.write(f'  "{srcq}" -> "{dstq}";\n')
         f.write("}\n")
     return p
+
+# autosave 2025-11-11T10:35:53.689947+00:00
